@@ -34,11 +34,11 @@ class BraviaRC:
         self._system_info = {}
         self._uid = None
 
-    def _jdata_build(self, method, params=None):
+    def _jdata_build(self, method, params=None, version="1.0"):
         if params:
-            ret = json.dumps({"method": method, "params": [params], "id": 1, "version": "1.0"})
+            ret = json.dumps({"method": method, "params": [params], "id": 1, "version": version})
         else:
-            ret = json.dumps({"method": method, "params": [], "id": 1, "version": "1.0"})
+            ret = json.dumps({"method": method, "params": [], "id": 1, "version": version})
         return ret
 
     def connect(self, pin, clientid, nickname):
@@ -292,6 +292,23 @@ class BraviaRC:
             scene_id = self._video_mode_mapping[scene_name]
             jdata = self._jdata_build('setSceneSetting', {'value':f'{scene_id}'})
             self.bravia_req_json('videoScreen', jdata)
+
+    def get_sound_output(self):
+        jdata = self._jdata_build('getSoundSettings', {"target": "outputTerminal"}, "1.1")
+        response = self.bravia_req_json('audio', jdata)
+        current_sound_output = response.get('result', [[{'currentValue':'none'}]])[0][0]
+        return current_sound_output.get('currentValue') 
+
+    def set_sound_output(self, outputTarget):
+        params = {"settings": [{"value": "speaker",
+                                "target": "outputTerminal"}]}
+        jdata = self._jdata_build('setSoundSettings', params, "1.1")
+        self.bravia_req_json('audio', jdata)
+
+    def get_ext_inputs_status(self): 
+        jdata = self._jdata_build('getCurrentExternalInputsStatus', version="1.1")
+        response = self.bravia_req_json('avContent', jdata)
+        return response.get('result', [[]])[0]
 
     def turn_on(self):
         """Turn the media player on."""
