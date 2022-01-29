@@ -300,7 +300,7 @@ class BraviaRC:
         return current_sound_output.get('currentValue') 
 
     def set_sound_output(self, outputTarget):
-        params = {"settings": [{"value": "speaker",
+        params = {"settings": [{"value": outputTarget,
                                 "target": "outputTerminal"}]}
         jdata = self._jdata_build('setSoundSettings', params, "1.1")
         self.bravia_req_json('audio', jdata)
