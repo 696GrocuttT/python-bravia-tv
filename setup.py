@@ -11,7 +11,7 @@ with open("bravia_tv/__init__.py",'r') as fh:
     MAINTAINER_EMAIL = re.search(r'^__email__ *= * "(.*)"$', text, re.M).group(1)
 
 setuptools.setup(
-    name="bravia_tv",
+    name="python-bravia-tv",
     version=VERSION,
     maintainer=MAINTAINER,
     maintainer_email=MAINTAINER_EMAIL,
